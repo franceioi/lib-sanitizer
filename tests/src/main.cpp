@@ -31,6 +31,6 @@ int main()
    
    cMatrix<char> M = cMatrix<char>::read(2, 2).smaller('m');
 
-   cString SS = cString::read(8, '\0').in("abcdefgh");
+   cString SS = cString::readChars(8).in("abcdefgh");
 }
 

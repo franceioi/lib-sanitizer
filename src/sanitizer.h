@@ -164,6 +164,11 @@ protected:
       iRowRead = BuffCheck.getRow();
       iColRead = BuffCheck.getCol();
    }
+public:
+   void clearRowCol()
+   {
+      iRowRead = iColRead = -1;
+   }
 };
 
 /// One-checker ///
@@ -192,12 +197,18 @@ public:
    {
       c<T> res;
       res.setVal( readVal() );
-      if (end != '\0')
-         BuffCheck.getChar(end);
+      BuffCheck.getChar(end);
       return res;
    }
-   
-   
+
+   template< class U = T, class = typename std::enable_if<std::is_same<U, char>::value>::type >
+   inline static c<T> readOne()
+   {
+      c<T> res;
+      res.setVal( readVal() );
+      return res;
+   }
+
    /// Generic call mechanism for Functors ///
    template< typename Function >  
    const c<T> & call(Function function, bool _true = true) const
@@ -325,17 +336,16 @@ public:
    // Read from stdin
    static cVector<T> read(int nbVals, char sep = ' ', char end = '\n')
    {
-      // TODO : use sep/end in practice + allow no caracter at all (\0 maybe ?)
       cVector<T> res;
       res.vec.resize(nbVals);
       for (int i = 0 ; i < nbVals ; i++)
       {
          res.vec[i] = c<T>::readVal();
-         if(i != nbVals - 1 && sep != '\0')
+         if(i != nbVals - 1)
             BuffCheck.getChar(sep);
+         else
+            BuffCheck.getChar(end);
       }
-      if (end != '\0')
-         BuffCheck.getChar(end);
       return res;
    }
 
@@ -343,11 +353,13 @@ public:
    template< class U = T, class = typename std::enable_if<std::is_same<U, char>::value>::type >
    c<int> size()
    {
-      return data().size();   
+      cInt s = data().size();
+      s.clearRowCol();
+      return s;
    }
    
    template< class U = T, class = typename std::enable_if<std::is_same<U, char>::value>::type >
-   inline static cVector<T> readline()
+   inline static cVector<T> readLine()
    {
       cVector<T> res;
       std::string s = BuffCheck.getLine();
@@ -355,7 +367,29 @@ public:
       std::copy(s.begin(), s.end(), res.vec.begin());
       return res;
    }
-   
+
+   template< class U = T, class = typename std::enable_if<std::is_same<U, char>::value>::type >
+   inline static cVector<T> readWord(char end)
+   {
+      cVector<T> res;
+      std::string s = BuffCheck.getWord(end);
+      res.vec.resize(s.size());
+      std::copy(s.begin(), s.end(), res.vec.begin());
+      return res;
+   }
+
+   template< class U = T, class = typename std::enable_if<std::is_same<U, char>::value>::type >
+   static cVector<T> readChars(int nbChars, char end = '\n')
+   {
+      cVector<T> res;
+      res.vec.resize(nbChars);
+      for (int i = 0 ; i < nbChars ; i++)
+      {
+         res.vec[i] = c<T>::readVal();
+      }
+      BuffCheck.getChar(end);
+      return res;
+   }
    
    /// Generic call mechanism for Functors ///
    template< typename Function >  
@@ -590,15 +624,36 @@ public:
       res.mat.resize(nbLines);
       for (int l = 0 ; l < nbLines ; l++)
       {
+         /*
+         // Old implementation
          res.mat[l].resize(nbVals);
          for (int i = 0 ; i < nbVals ; i++)
          {
             res.mat[l][i] = c<T>::readVal();
-            if(i != nbVals - 1 && sep != '\0')
+            if(i != nbVals - 1)
                BuffCheck.getChar(sep);
+            else
+               BuffCheck.getChar(end);
          }
-         if (end != '\0')
-            BuffCheck.getChar(end);
+         */
+         // Short implementation
+         std::vector<T> & tmp = cVector<T>::read(nbVals, sep, end).data();
+         res.mat[l].resize(tmp.size());
+         std::copy(tmp.begin(), tmp.end(), res.mat[l].begin()); 
+      }
+      return res;
+   }
+
+   template< class U = T, class = typename std::enable_if<std::is_same<U, char>::value>::type >
+   static cMatrix<T> readLines(int nbLines)
+   {
+      cMatrix<T> res;
+      res.mat.resize(nbLines);
+      for (int l = 0 ; l < nbLines ; l++)
+      {
+         std::vector<T> & line = cVector<T>::readLine().data();
+         res.mat[l].resize(line.size());
+         std::copy(line.begin(), line.end(), res.mat[l].begin()); 
       }
       return res;
    }
@@ -718,5 +773,6 @@ TODO :
 - regexp
 - pass the buffer in static
 - translating messages ? later
+- test writing speed...
 */
 

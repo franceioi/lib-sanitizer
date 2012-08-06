@@ -21,7 +21,9 @@
 class BuffChecker
 {
 public:
-   virtual char   getChar(char c = '\0') = 0;
+   static const char NO_CHECK = '\006'; // ACK, should never happened
+
+   virtual char   getChar(char c = BuffChecker::NO_CHECK) = 0;
    virtual int    getInt() = 0;
    virtual double getDouble() = 0;
    
@@ -36,6 +38,7 @@ public:
 
    virtual int getCol() = 0;
    virtual int getRow() = 0;
+
 };
 
 
@@ -277,9 +280,27 @@ public:
             return s;
       }
    }
-	
-   // Reads a caracter and, if c != '\0', checks if it equals c
-   char getChar(char c = '\0')
+
+   std::string getWord(char end = ' ')
+   {
+      std::string s;
+      while (true)
+      {
+         const char c = getChar();
+         if (c != ' ' && c != '\t' && c != '\n')
+            s += c;
+         else
+         {
+            if (c != end)
+               error("Wrong char : '\\%03d' instead of '\\%03d'\n '%c' vs '%c'", c, end, c, end);
+            return s;
+         }
+      }
+   }
+
+   
+   // Reads a caracter and, if c != BuffChecker::NO_CHECK, checks if it equals c
+   char getChar(char c = BuffChecker::NO_CHECK)
    {
       // Init stuff
       this->fillBuffer();
@@ -292,6 +313,7 @@ public:
          debug("getChar()");
       #endif
       #if WRITE_CORRECTED
+         // Eat additionnal spaces
          if (c == '\n')
             while (*nc == ' ')
                nc++;
@@ -299,12 +321,12 @@ public:
 
       // Read the number
       const char ch = *nc++;
-      if (c != '\0' && c != ch)
+      if (c != BuffChecker::NO_CHECK && c != ch)
          error("Wrong char : '\\%03d' instead of '\\%03d'\n '%c' vs '%c'", ch, c, ch, c);
 
       // Update variables
       iCol++;
-      if (c == '\n')
+      if (ch == '\n')
       {
          iRow++;
          iCol = 1;
@@ -315,6 +337,7 @@ public:
       #endif
       #if WRITE_CORRECTED
          fputc(c, stdout);
+         // Eat additionnal spaces
          while (*nc == ' ')
             nc++;
       #endif
@@ -344,7 +367,7 @@ public:
       {
          if (buf > MY_INT_MAX)
          {
-         	getDump(tmp);
+            getDump(tmp);
             error("The integer '%s...' is too big", tmp);
          }
          buf = buf * 10 + (*nc++ - '0');
@@ -353,7 +376,7 @@ public:
       // Nothing was read
       if (nc == pOri)
       {
-      	getDump(tmp);     	
+         getDump(tmp);        
          error("'%s...' is not the beginning of an integer", tmp);
       }
 
@@ -389,10 +412,10 @@ public:
          sign = -1;
          nc++;
       }
-      while('0' <= *nc  && *nc <= '9')
+      while ('0' <= *nc  && *nc <= '9')
          buf = buf * 10 + (*nc++ - '0');
       tooBig |= (nc - pOri > 15);
-      if(*nc == '.')
+      if (*nc == '.')
       {
          nc++;
          while('0' <= *nc  && *nc <= '9')
@@ -404,8 +427,8 @@ public:
       tooBig |= (nc - pOri > 16);
       if (tooBig)
       {
-      	if (*nc == '\n') nc--;
-      	getDump(tmp);
+         if (*nc == '\n') nc--;
+         getDump(tmp);
          error("The double '%s...' is too big", tmp);
       }
 
@@ -415,7 +438,7 @@ public:
       // Nothing was read
       if (nc == pOri)
       {
-      	getDump(tmp);     	
+         getDump(tmp);
          error("'%s...' is not the beginning of a double", tmp);
       }
 

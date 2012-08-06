@@ -4,6 +4,6 @@
 int main()
 {
    cInt length = cInt::read().greater(0);
-   cString text = cString::readline();
+   cString text = cString::readLine();
    text.size().equal(length);
 }

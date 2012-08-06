@@ -7,8 +7,12 @@ int main()
    cChar::read('-');
    cChar::read('\n');
    for (int i = 1 ; i <= 5 ; i++)
-      cChar::readOne();
-   cChar::readOne().equal('\n');// read the newline
+      cChar::read(cChar::NO_END);
+   cChar::readNewLine();
+
+   cInt::read(cInt::NO_END);
+   cChar::read('\n');
+
 
    // Line/word reading
    cString::readLine();

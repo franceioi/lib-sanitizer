@@ -192,21 +192,21 @@ public:
       return value;
    }   
 
+   static const char NO_END = '\006';
    // Read from stdin
    inline static c<T> read(char end = '\n')
    {
       c<T> res;
       res.setVal( readVal() );
-      BuffCheck.getChar(end);
+      if (end != NO_END)
+         BuffCheck.getChar(end);
       return res;
    }
 
    template< class U = T, class = typename std::enable_if<std::is_same<U, char>::value>::type >
-   inline static c<T> readOne()
+   inline static c<T> readNewLine()
    {
-      c<T> res;
-      res.setVal( readVal() );
-      return res;
+      return c<char>::read(NO_END).equal('\n');
    }
 
    /// Generic call mechanism for Functors ///
@@ -369,10 +369,10 @@ public:
    }
 
    template< class U = T, class = typename std::enable_if<std::is_same<U, char>::value>::type >
-   inline static cVector<T> readWord(char end)
+   inline static cVector<T> readWord(char spaceChar)
    {
       cVector<T> res;
-      std::string s = BuffCheck.getWord(end);
+      std::string s = BuffCheck.getWord(spaceChar);
       res.vec.resize(s.size());
       std::copy(s.begin(), s.end(), res.vec.begin());
       return res;

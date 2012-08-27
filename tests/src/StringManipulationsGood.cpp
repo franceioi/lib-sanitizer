@@ -27,5 +27,17 @@ int main()
    cMatrix<char>::read(3, 2, ' ', '\n');
    cMatrix<char>::read(3, 2, '-', '\n');
    cMatrix<char>::readLines(3);
+
+   // Specials
+   cString::readLine().in(sani::LOWER);
+   cString::readLine().in(sani::UPPER);
+   cString::readLine().in(sani::DIGITS);
+   cString::readLine().in(sani::ALPHA);
+   cString::readLine().in(sani::ALPHANUM);
+
+   cString name = cString::readLine();
+   name.sub(0, 1).in(sani::UPPER);
+   name.sub(1).in(sani::LOWER);
+
 }
 

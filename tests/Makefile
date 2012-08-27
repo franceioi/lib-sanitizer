@@ -7,5 +7,5 @@ speedTest:
 	. common.sh ; runSpeedAnalysis
 
 clean: 
-	rm -f sanitizer main prog
+	rm -f sanitizer main prog errLog
 	find . -name "*~" -delete

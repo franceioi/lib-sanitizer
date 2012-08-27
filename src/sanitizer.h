@@ -158,6 +158,7 @@ inline void check_divisibleBy(const C & caller, const T val, T div, bool _true =
 class BaseChecker
 {
 protected:
+
    int iRowRead, iColRead;
    void init()
    {
@@ -165,6 +166,8 @@ protected:
       iColRead = BuffCheck.getCol();
    }
 public:
+   static const char NO_END = '\006';
+
    void clearRowCol()
    {
       iRowRead = iColRead = -1;
@@ -192,7 +195,6 @@ public:
       return value;
    }   
 
-   static const char NO_END = '\006';
    // Read from stdin
    inline static c<T> read(char end = '\n')
    {
@@ -349,6 +351,21 @@ public:
       return res;
    }
 
+   cVector<T> sub(int start, int length = -1)
+   {
+      const int size = vec.size();
+      if ( !(0 <= start && start < size))
+         error("start is '%d' but there is only %d elements", start, size);
+      if (start + length >= size)
+         error("start is '%d', length is '%d' but there is only %d elements", start, length, size);
+      if (length == -1)
+         length = vec.size() - start;
+
+      cVector<T> res;
+      res.vec = std::vector<T>(vec.begin() + start, vec.begin() + start + length);
+      return res;
+   }
+
    /// Specific to cVector<char> = cString ///
    template< class U = T, class = typename std::enable_if<std::is_same<U, char>::value>::type >
    c<int> size()
@@ -387,7 +404,8 @@ public:
       {
          res.vec[i] = c<T>::readVal();
       }
-      BuffCheck.getChar(end);
+      if (end != NO_END)
+         BuffCheck.getChar(end);
       return res;
    }
    
@@ -763,6 +781,16 @@ private:
    }   
    
 };
+
+
+namespace sani
+{
+   std::string UPPER       = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+   std::string LOWER       = "abcdefghijklmnopqrstuvwxyz";
+   std::string DIGITS      = "0123456789";
+   std::string ALPHA       = LOWER + UPPER;
+   std::string ALPHANUM    = ALPHA + DIGITS;
+}
 
 
 #define SANITIZER_H

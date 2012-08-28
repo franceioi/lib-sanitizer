@@ -785,11 +785,21 @@ private:
 
 namespace sani
 {
+   // Useful string constants
    std::string UPPER       = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
    std::string LOWER       = "abcdefghijklmnopqrstuvwxyz";
    std::string DIGITS      = "0123456789";
    std::string ALPHA       = LOWER + UPPER;
    std::string ALPHANUM    = ALPHA + DIGITS;
+
+   // Error function
+   void error(std::string fmt, ...)
+   {
+      va_list ap;
+      va_start(ap, fmt);
+      verror(fmt + "\n", ap);
+      va_end(ap); 
+   }  
 }
 
 

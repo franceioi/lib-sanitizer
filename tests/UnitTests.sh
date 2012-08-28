@@ -7,6 +7,7 @@
 Suite() {
    shuRegTest Init
    shuRegTest TestMain
+   shuRegTest TestError
    shuRegTest TestStringManipulationGood
    shuRegTest TestExamples
    shuRegTest Clean
@@ -37,15 +38,23 @@ TestMain()
 {
    compileFile src/main.cpp 2>> errLog
    shuAssert "Expected compilable file." $?
-   ./prog < inputs/main.in 2>> errLog
+   ./prog < inputs/main.in 2>> errLog && rm -f prog
    shuAssert "Execution" $?
+}
+
+TestError()
+{
+   compileFile src/UserError.cpp 2>> errLog
+   shuAssert "Expected compilable file." $?
+   ./prog < /dev/null 2>> errLog && rm -f prog
+   shuDeny "Execution" $?
 }
 
 TestStringManipulationGood()
 {
    compileFile src/StringManipulationsGood.cpp 2>> errLog
    shuAssert "Expected compilable file." $?
-   ./prog < inputs/StringManipulationsGood.in 2>> errLog
+   ./prog < inputs/StringManipulationsGood.in 2>> errLog && rm -f prog
    shuAssert "Execution" $?
 }
 

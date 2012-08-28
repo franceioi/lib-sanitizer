@@ -324,7 +324,15 @@ public:
    operator std::vector<T>()
    {
       return vec;
-   }   
+   }
+
+   template< class U = T, class = typename std::enable_if<std::is_same<U, char>::value>::type >
+   operator std::string()
+   {
+      std::string res(vec.begin(), vec.end());
+      return res;
+   }
+
    std::vector<T> & data()
    {
       return vec;

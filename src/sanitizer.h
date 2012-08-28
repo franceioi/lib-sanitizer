@@ -364,7 +364,7 @@ public:
       const int size = vec.size();
       if ( !(0 <= start && start < size))
          error("start is '%d' but there is only %d elements", start, size);
-      if (length != -1 && start + length >= size)
+      if (length != -1 && start + length > size)
          error("start is '%d', length is '%d' but there is only %d elements", start, length, size);
       if (length == -1)
          length = vec.size() - start;

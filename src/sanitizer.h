@@ -321,6 +321,12 @@ public:
       setVal(V);
    }
 
+   template< class U = T, class = typename std::enable_if<std::is_same<U, char>::value>::type >
+   cVector<T>(std::string & V)
+   {
+      vec = std::vector<T>(V.begin(), V.end());
+   }
+
    operator std::vector<T>()
    {
       return vec;
@@ -332,6 +338,8 @@ public:
       std::string res(vec.begin(), vec.end());
       return res;
    }
+
+
 
    std::vector<T> & data()
    {

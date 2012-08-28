@@ -39,5 +39,8 @@ int main()
    name.sub(0, 1).in(sani::UPPER);
    name.sub(1).in(sani::LOWER);
 
+   // Conversion
+   std::string xx = cString::readLine();
+   cString yy(xx);
 }
 

@@ -322,7 +322,7 @@ public:
    }
 
    template< class U = T, class = typename std::enable_if<std::is_same<U, char>::value>::type >
-   cVector<T>(std::string & V)
+   cVector<T>(std::basic_string<char> V)
    {
       vec = std::vector<T>(V.begin(), V.end());
    }

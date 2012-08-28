@@ -42,5 +42,6 @@ int main()
    // Conversion
    std::string xx = cString::readLine();
    cString yy(xx);
+   cString zz(xx + xx);
 }
 

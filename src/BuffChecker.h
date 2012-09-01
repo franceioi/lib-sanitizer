@@ -482,9 +482,10 @@ protected:
    // Reads 'size' octets from stdin and puts it in the buffer
    inline void read(int size = SIZE_BUF)
    {
+      //printf("read : lc=%p\n", lc);
       const int nbChars = fread(lc, 1, size, stdin);
       lc = lc + nbChars;
-      //printf("read : %d %p\n", nbChars, lc);
+      //printf("read : lc=%p, nbChars=%d\n", lc, nbChars);
    }
 
    // Fills the buffer as much as possible
@@ -492,10 +493,13 @@ protected:
    {
       if(force || nc - buff > SIZE_BUF - 50) // 50 : enough for everything
       {
+         //printf("fill : nc=%p, buff=%p\n", nc, buff);
          const int s = buff + SIZE_BUF - nc;
          memcpy(buff, nc, sizeof(char)*s);
+         //printf("fill : lc=%p, lc=%p\n", lc, buff + s);
+         // Push it to the left by (nc-buff)
+         lc = lc - (nc-buff);
          nc = buff;
-         lc = buff + s;
          this->read(SIZE_BUF - s);
       }
    }

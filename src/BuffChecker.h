@@ -177,7 +177,7 @@ bool SANI_EXIT = false;
 // Utility function
 std::string format(std::string fmt, ...)
 {
-   char buf[2000];
+   char buf[10 * 1000];
    va_list aq;
    va_start(aq, fmt);
    vsprintf(buf, fmt.c_str(), aq);
@@ -186,7 +186,7 @@ std::string format(std::string fmt, ...)
 }
 // Same one, with va_args
 std::string vformat(std::string fmt, va_list args) {
-   char buf[2000];
+   char buf[10 * 1000];
    vsprintf(buf, fmt.c_str(), args);
    return std::string(buf);
 }

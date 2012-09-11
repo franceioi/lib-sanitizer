@@ -455,6 +455,10 @@ public:
       return sign * buf;
    }
 
+   bool isFinished()
+   {
+      return (nc == lc);
+   }
    // Will produce an error if the EOF was not reached during the reading
    void finished()
    {

@@ -816,6 +816,11 @@ namespace sani
       verror(fmt + "\n", ap);
       va_end(ap); 
    }  
+
+   bool isFinished()
+   {
+      return BuffCheck.isFinished();
+   }
 }
 
 

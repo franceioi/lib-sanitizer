@@ -27,13 +27,6 @@ FastIO BuffCheck;
 
 //// Utilities ////
 // Build a vector from a variable number of arguments
-template<typename T, typename... Args>
-std::vector<T> buildVector(Args... args)
-{
-   std::vector<T> res;
-   buildVectorRec(res, args...);
-   return res;
-}
 template<typename T>
 void buildVectorRec(std::vector<T> & res, T value)
 {
@@ -45,6 +38,14 @@ void buildVectorRec(std::vector<T> & res, T value, Args... args)
    res.push_back(value);
    buildVectorRec(res, args...);
 }
+template<typename T, typename... Args>
+std::vector<T> buildVector(Args... args)
+{
+   std::vector<T> res;
+   buildVectorRec(res, args...);
+   return res;
+}
+
 
 
 //// List of all the checkers ////
@@ -671,7 +672,7 @@ public:
          }
          */
          // Short implementation
-         std::vector<T> & tmp = cVector<T>::read(nbVals, sep, end).data();
+         std::vector<T> tmp = cVector<T>::read(nbVals, sep, end).data();
          res.mat[l].resize(tmp.size());
          std::copy(tmp.begin(), tmp.end(), res.mat[l].begin()); 
       }
@@ -685,7 +686,7 @@ public:
       res.mat.resize(nbLines);
       for (int l = 0 ; l < nbLines ; l++)
       {
-         std::vector<T> & line = cVector<T>::readLine().data();
+         std::vector<T> line = cVector<T>::readLine().data();
          res.mat[l].resize(line.size());
          std::copy(line.begin(), line.end(), res.mat[l].begin()); 
       }
